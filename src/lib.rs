@@ -57,9 +57,9 @@ impl ChallengeFactory {
     pub fn create_challenge(
         &mut self,
         name: String,
-        challenge_nft: String,
-        termination_date: u64,
-        winner_limit: u64,
+        challenges: Vec<String>,
+        termination_date: String,
+        winner_limit: String,
         reward_nft: String,
     ) -> Promise {
         log!("Creating challenge: {}", name);
@@ -71,10 +71,8 @@ impl ChallengeFactory {
         self.assert_no_challenge_with_id(name.clone());
         let formatted_challenge_id = format!("{}.{}", name, env::current_account_id());
         let challenge_account_id = AccountId::from_str(&formatted_challenge_id).unwrap();
-
-        let mut challenges: Vec<String> = Vec::new();
-        challenges.push(challenge_nft);
-
+        let winner_limit_parsed :u64 = winner_limit.parse().unwrap();
+        let termination_date_parsed : u64= termination_date.parse().unwrap();
         Promise::new(challenge_account_id.clone())
             .create_account()
             .transfer(NearToken::from_yoctonear(bytes_to_stake(400_000)))
@@ -85,8 +83,8 @@ impl ChallengeFactory {
                         "owner_id":env::predecessor_account_id(),
                         "name":name,
                         "challenge_nfts":challenges,
-                        "termination_date":termination_date,
-                        "winner_limit":winner_limit,
+                        "termination_date":termination_date_parsed,
+                        "winner_limit":winner_limit_parsed,
                         "reward_nft":reward_nft})
                 .to_string()
                 .into_bytes(),

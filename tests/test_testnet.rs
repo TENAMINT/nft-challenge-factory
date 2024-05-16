@@ -32,10 +32,10 @@ async fn test_contract_is_operational_on_testnet() -> Result<(), Box<dyn std::er
     let outcome = account
         .call(contract.id(), "create_challenge")
         .args_json(json!({
-        "name": "test_challenge2",
-        "challenge_nft": "test_challenge_nft",
-        "termination_date": 1000,
-        "winner_limit": 1,
+        "name": "test_challenge41",
+        "challenges": vec!["a12345x.testnet"],
+        "termination_date": "1000",
+        "winner_limit": "1",
         "reward_nft": "a12345x.testnet"}))
         .max_gas()
         .deposit(NearToken::from_near(4))
