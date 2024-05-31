@@ -5,6 +5,7 @@ use near_sdk::log;
 use near_sdk::AccountId;
 use near_sdk::NearToken;
 use near_workspaces::types::SecretKey;
+use nft_challenger_generator::TokenMetadata;
 use serde_json::json;
 
 #[tokio::test]
@@ -32,15 +33,34 @@ async fn test_contract_is_operational_on_testnet() -> Result<(), Box<dyn std::er
     let outcome = account
         .call(contract.id(), "create_challenge")
         .args_json(json!({
-        "name": "test_challenge41",
-        "challenges": vec!["a12345x.testnet"],
-        "termination_date": "1000",
-        "winner_limit": "1",
-        "reward_nft": "a12345x.testnet"}))
+            "id_prefix": "test_challe1672spa",
+            "name": "Test Challenge!",
+            "description": "A test description",
+            "image_link": "https://www.creativeuncut.com/gallery-03/art/sa-sonic-05.jpg",
+            "reward_nft": "testerstore123.mintspace2.testnet",
+            "challenge_nft_ids":vec!["testerstore123.mintspace2.testnet"],
+            "_termination_date_in_ns": "9007199254740991",
+            "_winner_limit": "9007199254740991",
+            "reward_token_metadata":TokenMetadata{
+                title: Some("Test Token".to_string()),
+                description: Some("Test Token".to_string()),
+                media: Some("https://www.creativeuncut.com/gallery-03/art/sa-sonic-05.jpg".to_string()),
+                media_hash: None,
+                copies: Some(1),
+                expires_at: None,
+                starts_at: None,
+                extra: None,
+                reference: None,
+                reference_hash: None,
+            
+            }
+        }))
         .max_gas()
         .deposit(NearToken::from_near(4))
         .transact()
         .await?;
+
+    log!("Outcome: {:?}", outcome.failures());
 
     assert!(outcome.is_success());
     Ok(())
