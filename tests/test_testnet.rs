@@ -1,11 +1,12 @@
-use std::env;
+
 use std::str::FromStr;
 
 use near_sdk::log;
 use near_sdk::AccountId;
 use near_sdk::NearToken;
 use near_workspaces::types::SecretKey;
-use nft_challenger_generator::TokenMetadata;
+
+use nft_challenger_generator::NFTTokenMetadata;
 use serde_json::json;
 
 #[tokio::test]
@@ -41,7 +42,7 @@ async fn test_contract_is_operational_on_testnet() -> Result<(), Box<dyn std::er
             "challenge_nft_ids":vec!["testerstore123.mintspace2.testnet"],
             "_termination_date_in_ns": "9007199254740991",
             "_winner_limit": "9007199254740991",
-            "reward_token_metadata":TokenMetadata{
+            "reward_token_metadata":NFTTokenMetadata{
                 title: Some("Test Token".to_string()),
                 description: Some("Test Token".to_string()),
                 media: Some("https://www.creativeuncut.com/gallery-03/art/sa-sonic-05.jpg".to_string()),

@@ -1,13 +1,9 @@
-use std::env;
-use std::str::FromStr;
-
-use near_sdk::log;
-use near_sdk::AccountId;
 use near_sdk::NearToken;
+use nft_challenger_generator::NFTTokenMetadata;
 use serde_json::json;
 
 #[tokio::test]
-async fn test_contract_is_operational() -> Result<(), Box<dyn std::error::Error>> {
+async fn test_can_create_challenge() -> Result<(), Box<dyn std::error::Error>> {
     let sandbox = near_workspaces::sandbox().await?;
     let contract_wasm = near_workspaces::compile_project("./").await?;
 
@@ -15,30 +11,45 @@ async fn test_contract_is_operational() -> Result<(), Box<dyn std::error::Error>
 
     let user_account = sandbox.dev_create_account().await?;
 
-    log!("User account: {}", user_account.secret_key());
-
-    let outcome = user_account
+    let challenge_creation_outcome = user_account
         .call(contract.id(), "create_challenge")
         .args_json(json!({
-            "challenge_name": "test_challenge",
-            "challenge_nft": "test_challenge_nft",
-            "termination_date": 1000,
-            "winner_limit": 1,
-            "reward_nft": "test_reward_nft"}))
+            "id_prefix": "test-challenge",
+            "name": "Test Challenge!",
+            "description": "A test description",
+            "media_link": "A fake media link",
+            "reward_nft_id": "reward-nft-id",
+            "challenge_nft_ids": vec!["challenge-nft-id"],
+            "_expiration_date_in_ns": "9007199254740991",
+            "_winner_limit": "100",
+            // only necessary if contract will be minting reward nft
+            "reward_nft_metadata": NFTTokenMetadata{
+                title: Some("Test Token".to_string()),
+                description: Some("Test Token".to_string()),
+                media: Some("https://www.creativeuncut.com/gallery-03/art/sa-sonic-05.jpg".to_string()),
+                copies: Some(1),
+                media_hash: None,
+                expires_at: None,
+                starts_at: None,
+                extra: None,
+                reference: None,
+                reference_hash: None,
+            },
+        }))
         .max_gas()
         .deposit(NearToken::from_near(10))
         .transact()
         .await?;
-    log!("Outcome: {:?}", outcome.failures());
 
-    for log in outcome.logs() {
-        log!("Log: {}", log);
-    }
+    assert!(challenge_creation_outcome.is_success());
 
-    assert!(outcome.is_success());
+    let outcome_challenge_exists = contract
+        .view("challenge_exists")
+        .args_json(json!({
+            "store_id":"test-challenge"
+        }))
+        .await?;
 
-    // let user_message_outcome = contract.view("get_greeting").args_json(json!({})).await?;
-    // assert_eq!(user_message_outcome.json::<String>()?, "Hello World!");
-
+    assert!(outcome_challenge_exists.json::<bool>().unwrap());
     Ok(())
 }
