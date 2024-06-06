@@ -86,6 +86,7 @@ impl ChallengeFactory {
         challenge_nft_ids: std::vec::Vec<String>,
         _expiration_date_in_ns: String,
         _winner_limit: String,
+        creator_can_update: bool,
         // only necessary if contract will be minting reward nft
         reward_nft_metadata: NFTTokenMetadata,
     ) -> Promise {
@@ -117,6 +118,7 @@ impl ChallengeFactory {
                 "_challenge_nft_ids": challenge_nft_ids,
                 "expiration_date_in_ns": expiration_date_in_ns,
                 "winner_limit": winner_limit,
+                "creator_can_update": creator_can_update,
                 "reward_nft_metadata": reward_nft_metadata
                  })
                 .to_string()

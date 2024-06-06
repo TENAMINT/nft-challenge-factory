@@ -51,6 +51,7 @@ async fn test_can_create_challenge() -> Result<(), Box<dyn std::error::Error>> {
             "challenge_nft_ids": vec!["challenge-nft-id"],
             "_expiration_date_in_ns": "9007199254740991",
             "_winner_limit": "100",
+            "creator_can_update": true,
             // only necessary if contract will be minting reward nft
             "reward_nft_metadata": NFTTokenMetadata{
                 title: Some("Test Token".to_string()),
