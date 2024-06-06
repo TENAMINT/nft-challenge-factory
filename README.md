@@ -1,10 +1,6 @@
 # nft-challenger-generator
 
-TODO:
-Test timing attack, specifically claim more nfts then available.
-
-claim challenge validates claim, store in our state we owe the wallet a reward nft.
-tx2 is actually minting the nft.
+A factory smart contract for creating NFT challenges, factory keeps track of nft challenge's it's created.
 
 cargo-near-new-project-description
 
