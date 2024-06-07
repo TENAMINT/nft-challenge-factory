@@ -84,6 +84,7 @@ impl ChallengeFactory {
         media_link: String,
         reward_nft_id: String,
         challenge_nft_ids: std::vec::Vec<String>,
+        burn_challenge_piece_on_claim: Vec<bool>,
         _expiration_date_in_ns: String,
         _winner_limit: String,
         creator_can_update: bool,
@@ -105,7 +106,7 @@ impl ChallengeFactory {
 
         Promise::new(challenge_account_id.clone())
             .create_account()
-            .transfer(NearToken::from_yoctonear(bytes_to_stake(400_000)))
+            .transfer(NearToken::from_yoctonear(bytes_to_stake(800_000)))
             .deploy_contract(include_bytes!("../wasm/nft-challenge.wasm").to_vec())
             .function_call(
                 String::from("new"),
@@ -116,6 +117,7 @@ impl ChallengeFactory {
                 "media_link":media_link,
                 "reward_nft_id":reward_nft_id,
                 "_challenge_nft_ids": challenge_nft_ids,
+                "_burn_challenge_piece_on_claim": burn_challenge_piece_on_claim,
                 "expiration_date_in_ns": expiration_date_in_ns,
                 "winner_limit": winner_limit,
                 "creator_can_update": creator_can_update,

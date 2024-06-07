@@ -49,6 +49,7 @@ async fn test_can_create_challenge() -> Result<(), Box<dyn std::error::Error>> {
             "media_link": "A fake media link",
             "reward_nft_id": "reward-nft-id",
             "challenge_nft_ids": vec!["challenge-nft-id"],
+            "burn_challenge_piece_on_claim": vec![true],
             "_expiration_date_in_ns": "9007199254740991",
             "_winner_limit": "100",
             "creator_can_update": true,
