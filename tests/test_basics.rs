@@ -29,6 +29,8 @@ pub struct ChallengeMetaData {
     pub winners_count: u64,
     // Whether the challenge is completed or not.
     pub challenge_completed: bool,
+    // Whether the creator of this challenge can update the completion status.
+    pub creator_can_update: bool,
 }
 
 #[tokio::test]
@@ -82,7 +84,6 @@ async fn test_can_create_challenge() -> Result<(), Box<dyn std::error::Error>> {
         .await?;
 
     assert!(outcome_challenge_exists.json::<bool>().unwrap());
-    println!("GOT HERE 22");
     let mut s = "test-challenge.".to_string();
     s.push_str(contract.id().as_str());
     let metadata_call = sandbox
@@ -91,7 +92,6 @@ async fn test_can_create_challenge() -> Result<(), Box<dyn std::error::Error>> {
             "get_challenge_metadata",
         )
         .await?;
-    println!("GOT HERE");
     let metadata: ChallengeMetaData = metadata_call.json().unwrap();
     assert_eq!(metadata.owner_id, user_account.id().to_string());
     assert_eq!(metadata.name, "Test Challenge!");
@@ -103,6 +103,7 @@ async fn test_can_create_challenge() -> Result<(), Box<dyn std::error::Error>> {
     assert_eq!(metadata.winner_limit, 100);
     assert_eq!(metadata.winners_count, 0);
     assert_eq!(metadata.challenge_completed, false);
+    assert_eq!(metadata.creator_can_update, true);
     assert_eq!(
         metadata.reward_nft_metadata.title,
         Some("Test Token".to_string())

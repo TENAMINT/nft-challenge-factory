@@ -88,7 +88,7 @@ impl ChallengeFactory {
         _expiration_date_in_ns: String,
         _winner_limit: String,
         creator_can_update: bool,
-        // only necessary if contract will be minting reward nft
+        // only necessary if contract will be minting the reward nft
         reward_nft_metadata: NFTTokenMetadata,
     ) -> Promise {
         log!("Creating challenge: {}", name);
@@ -104,6 +104,7 @@ impl ChallengeFactory {
         let winner_limit: u64 = _winner_limit.parse().unwrap();
         let expiration_date_in_ns: u64 = _expiration_date_in_ns.parse().unwrap();
 
+        self.challenges.insert(id_prefix.clone());
         Promise::new(challenge_account_id.clone())
             .create_account()
             .transfer(NearToken::from_yoctonear(bytes_to_stake(800_000)))
@@ -127,7 +128,7 @@ impl ChallengeFactory {
                 .into_bytes(),
                 // TODO: Get better gas estimates
                 NearToken::from_near(0),
-                Gas::from_tgas(35),
+                Gas::from_tgas(5),
             )
             .then(
                 Self::ext(env::current_account_id())
