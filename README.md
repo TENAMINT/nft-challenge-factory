@@ -1,7 +1,10 @@
-# nft-challenger-generator
+# nft-challenge-factory
 
 A factory smart contract for creating NFT challenges, the factory keeps track of nft challenge's it's created. Note, if you make any changes to the [challenge contract](https://github.com/TENAMINT/nft-challenge), you'll need to 
 get the compiled `target/wasm32-unknown-unknown/release/nft_challenge.wasm` file within the  [challenge contract repo](https://github.com/TENAMINT/nft-challenge) after building and replace the existing `nft-challenge.wasm` file at `wasm/nft-challenge.wasm` location in this repo. Note you need to rename `nft_challenge.wasm` to `nft-challenge.wasm` as well.
+
+## Important: 
+The challenges generated will be at the account id `{ID_PREFIX}.{ID OF THIS FACTORY CONTRACT}` For example if I created a challenge with the id prefix of my-challenge, and the challenge factory contract was deployed at challenge-factory.testnet, then the challenge contract would be deployed at account `my-challenge.challenge-factory.testnet`
 
 
 ## How to Build Locally?
