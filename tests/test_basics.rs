@@ -29,7 +29,7 @@ pub struct ChallengeMetaData {
     pub winners_count: u64,
     // Whether the challenge is completed or not.
     pub challenge_completed: bool,
-    // Whether the creator of this challenge can update the completion status.
+    // Whether the creator of this challenge can update the challenge status.
     pub creator_can_update: bool,
 }
 
@@ -55,10 +55,9 @@ async fn test_can_create_challenge() -> Result<(), Box<dyn std::error::Error>> {
             "_expiration_date_in_ns": "9007199254740991",
             "_winner_limit": "100",
             "creator_can_update": true,
-            // only necessary if contract will be minting reward nft
             "reward_nft_metadata": NFTTokenMetadata{
                 title: Some("Test Token".to_string()),
-                description: Some("Test Token".to_string()),
+                description: Some("Test Token Desc".to_string()),
                 media: Some("media link".to_string()),
                 copies: Some(1),
                 media_hash: None,
@@ -70,7 +69,7 @@ async fn test_can_create_challenge() -> Result<(), Box<dyn std::error::Error>> {
             },
         }))
         .max_gas()
-        .deposit(NearToken::from_near(10))
+        .deposit(NearToken::from_near(1))
         .transact()
         .await?;
 
@@ -84,11 +83,11 @@ async fn test_can_create_challenge() -> Result<(), Box<dyn std::error::Error>> {
         .await?;
 
     assert!(outcome_challenge_exists.json::<bool>().unwrap());
-    let mut s = "test-challenge.".to_string();
-    s.push_str(contract.id().as_str());
+    let mut id_prefix = "test-challenge.".to_string();
+    id_prefix.push_str(contract.id().as_str());
     let metadata_call = sandbox
         .view(
-            &AccountId::from_str(s.as_str()).unwrap(),
+            &AccountId::from_str(id_prefix.as_str()).unwrap(),
             "get_challenge_metadata",
         )
         .await?;
@@ -110,7 +109,7 @@ async fn test_can_create_challenge() -> Result<(), Box<dyn std::error::Error>> {
     );
     assert_eq!(
         metadata.reward_nft_metadata.description,
-        Some("Test Token".to_string())
+        Some("Test Token Desc".to_string())
     );
     assert_eq!(
         metadata.reward_nft_metadata.media,

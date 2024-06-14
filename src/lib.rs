@@ -11,13 +11,12 @@ use near_sdk::{
 
 use near_sdk::{env, store::LookupSet};
 
+// Cost per byte of storage
 pub const YOCTO_PER_BYTE: u128 = 10_000_000_000_000_000_000;
 
 const fn bytes_to_stake(bytes: u128) -> u128 {
     (bytes as u128) * YOCTO_PER_BYTE
 }
-
-// TODO: Add Owner IDs
 
 #[derive(Clone, Debug, Deserialize, Serialize, BorshDeserialize, BorshSerialize)]
 pub struct NFTTokenMetadata {
@@ -93,10 +92,9 @@ impl ChallengeFactory {
     ) -> Promise {
         log!("Creating challenge: {}", name);
         assert!(
-            env::attached_deposit().as_yoctonear() >= bytes_to_stake(400_000),
+            env::attached_deposit().as_yoctonear() >= bytes_to_stake(100_000),
             "To cover the storage required for your store, you need to attach at least {} yoctoNEAR to this transaction.",
-            // TODO: Figure out more accurate bytes
-            bytes_to_stake(400_000)
+            bytes_to_stake(100_000)
         );
         self.assert_no_challenge_with_id(name.clone());
         let formatted_challenge_id = format!("{}.{}", id_prefix, env::current_account_id());
@@ -154,7 +152,6 @@ impl ChallengeFactory {
 #[cfg(test)]
 mod tests {
     use super::*;
-
     #[test]
     #[should_panic(expected = "Challenge with that ID already exists")]
     fn get_default_greeting() {
